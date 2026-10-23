@@ -1,0 +1,168 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to your Sophos Firewall",
+        "description": "Enable SNMP on the firewall first: Administration › SNMP (add an agent and a v1/v2c community or a v3 user that allows this Home Assistant's IP), and tick SNMP under Administration › Device access for the zone Home Assistant is in.",
+        "data": {
+          "host": "Firewall IP address or hostname",
+          "port": "SNMP port",
+          "snmp_version": "SNMP version"
+        }
+      },
+      "reconfigure": {
+        "title": "Change connection settings",
+        "data": {
+          "host": "Firewall IP address or hostname",
+          "port": "SNMP port",
+          "snmp_version": "SNMP version"
+        }
+      },
+      "community": {
+        "title": "SNMP community",
+        "description": "Community configured on {host} under Administration › SNMP.",
+        "data": {
+          "community": "Community string"
+        }
+      },
+      "v3": {
+        "title": "SNMPv3 user",
+        "description": "SNMPv3 user configured on {host} under Administration › SNMP. Keys must be at least 8 characters.",
+        "data": {
+          "v3_username": "Username",
+          "auth_protocol": "Authentication algorithm",
+          "auth_key": "Authentication password",
+          "priv_protocol": "Encryption algorithm",
+          "priv_key": "Encryption password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "No SNMP response. Check the IP, that SNMP is ticked under Device access for HA's zone, that the community/user matches, and that the SNMP agent's allowed hosts include Home Assistant.",
+      "invalid_auth": "The firewall rejected the SNMPv3 credentials (user, password or algorithm mismatch).",
+      "key_too_short": "Must be at least 8 characters.",
+      "priv_needs_auth": "Encryption requires an authentication algorithm.",
+      "unknown": "Unexpected error, see the Home Assistant log."
+    },
+    "abort": {
+      "already_configured": "This firewall is already configured.",
+      "reconfigure_successful": "Connection settings updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Monitored items",
+        "description": "{summary}\n\nCurrently monitoring: {selected}.\n\nPick a category to add or remove items. Changes are applied when you choose **Save and close**.",
+        "menu_options": {
+          "system": "System & resources",
+          "services": "Services",
+          "licenses": "Licenses & subscriptions",
+          "high_availability": "High availability",
+          "hardware": "Hardware sensors",
+          "interfaces": "Interfaces",
+          "vpn": "IPsec VPN connections",
+          "access_points": "Wireless access points",
+          "custom_add": "Add a custom OID",
+          "custom_remove": "Remove custom OIDs",
+          "polling": "Polling & timeouts",
+          "save": "Save and close"
+        }
+      },
+      "system": {
+        "title": "System & resources",
+        "description": "Tick the items to monitor; untick to remove their entities. Current values are shown next to each item.",
+        "data": { "system_items": "Items" }
+      },
+      "services": {
+        "title": "Services",
+        "description": "Each selected service becomes a sensor showing running / stopped / dead / untouched etc. \"Untouched\" usually means the feature isn't configured.",
+        "data": { "service_items": "Services" }
+      },
+      "licenses": {
+        "title": "Licenses & subscriptions",
+        "description": "Each selected license becomes a sensor with its subscription status; the expiry date and days remaining are attributes.",
+        "data": { "license_items": "Licenses" }
+      },
+      "high_availability": {
+        "title": "High availability",
+        "data": { "ha_items": "Items" }
+      },
+      "hardware": {
+        "title": "Hardware sensors",
+        "description": "Temperatures, fans and power supplies are reported by XGS appliances on SFOS 22 and later.",
+        "data": { "hardware_items": "Sensors" }
+      },
+      "interfaces": {
+        "title": "Interfaces",
+        "description": "Choose the interfaces to monitor, then which metrics to create for each of them. Each interface gets its own device. This firewall reports {hc} traffic counters.",
+        "data": {
+          "interfaces": "Interfaces",
+          "interface_metrics": "Metrics for each selected interface"
+        }
+      },
+      "vpn": {
+        "title": "IPsec VPN connections",
+        "data": {
+          "vpn_tunnels": "Connections",
+          "vpn_metrics": "Metrics for each selected connection"
+        }
+      },
+      "access_points": {
+        "title": "Wireless access points",
+        "data": { "access_points": "Access points" }
+      },
+      "custom_add": {
+        "title": "Add a custom OID",
+        "description": "Monitor any OID the firewall exposes. Use \"rate\" for counters to get a per-second value (multiplied by the scale, e.g. 0.000008 turns bytes/s into Mbit/s). Last value read: {value}",
+        "data": {
+          "name": "Name",
+          "oid": "OID (numeric, e.g. 1.3.6.1.2.1.1.3.0)",
+          "mode": "Value type",
+          "unit": "Unit of measurement",
+          "scale": "Scale (multiplier)",
+          "device_class": "Device class",
+          "state_class": "State class",
+          "skip_test": "Add without testing the OID"
+        }
+      },
+      "custom_remove": {
+        "title": "Remove custom OIDs",
+        "data": { "remove": "Custom OIDs to remove" }
+      },
+      "polling": {
+        "title": "Polling & timeouts",
+        "data": {
+          "scan_interval": "Poll interval",
+          "timeout": "SNMP timeout",
+          "retries": "SNMP retries"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "The firewall didn't answer SNMP.",
+      "invalid_oid": "Enter a numeric OID such as 1.3.6.1.2.1.1.3.0.",
+      "duplicate_oid": "This OID is already monitored.",
+      "oid_no_value": "The firewall returned no value for this OID. Tick \"Add without testing\" to add it anyway.",
+      "not_numeric": "This OID returns text; choose the \"text\" value type.",
+      "name_required": "A name is required."
+    }
+  },
+  "selector": {
+    "snmp_version": {
+      "options": { "1": "v1", "2c": "v2c", "3": "v3" }
+    },
+    "auth_protocol": {
+      "options": { "none": "None", "md5": "MD5", "sha": "SHA-1", "sha224": "SHA-224", "sha256": "SHA-256", "sha384": "SHA-384", "sha512": "SHA-512" }
+    },
+    "priv_protocol": {
+      "options": { "none": "None", "des": "DES", "3des": "3DES", "aes": "AES-128", "aes192": "AES-192", "aes256": "AES-256" }
+    },
+    "custom_mode": {
+      "options": { "number": "Number", "text": "Text", "rate": "Rate (per second, from a counter)" }
+    },
+    "custom_state_class": {
+      "options": { "none": "None", "measurement": "Measurement", "total": "Total", "total_increasing": "Total increasing" }
+    }
+  }
+}

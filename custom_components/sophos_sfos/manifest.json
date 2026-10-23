@@ -1,0 +1,14 @@
+{
+  "domain": "sophos_sfos",
+  "name": "Sophos SFOS Monitor",
+  "codeowners": ["@RIGeek"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/RIGeek/HACS-Sophos-SFOS-Monitor",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/RIGeek/HACS-Sophos-SFOS-Monitor/issues",
+  "loggers": ["custom_components.sophos_sfos", "pysnmp"],
+  "requirements": ["pysnmp>=7.1.21,<8"],
+  "version": "0.1.0"
+}

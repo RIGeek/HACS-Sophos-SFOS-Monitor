@@ -1,0 +1,29 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Start SFOS SNMP simulator
+        run: |
+          python -m venv /tmp/sim
+          /tmp/sim/bin/pip install -q snmpsim pysmi cryptography
+          /tmp/sim/bin/snmpsim-command-responder \
+            --data-dir=tests/fixtures \
+            --agent-udpv4-endpoint=127.0.0.1:1161 \
+            --cache-dir=/tmp/simcache > /tmp/snmpsim.log 2>&1 &
+          sleep 8
+          tail -2 /tmp/snmpsim.log
+      - name: Install test requirements
+        run: pip install -r requirements_test.txt
+      - name: Run tests
+        run: pytest -q
